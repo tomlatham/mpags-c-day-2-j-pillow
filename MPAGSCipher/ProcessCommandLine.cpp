@@ -58,5 +58,5 @@ bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& help
     		return false;
     	}
 	}
-	return 0;
+	return true;
 }

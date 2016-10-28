@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
+
 #include "TransformChar.hpp"
 #include "ProcessCommandLine.hpp"
 
@@ -22,7 +24,12 @@ int main(int argc, char* argv[])
 	std::string inputFile {""};
 	std::string outputFile {""};
 
-	processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile);	
+	bool commandLineProcessedGood {processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile)};
+	
+	if (commandLineProcessedGood == false){
+		std::cout << "Command line error" << std::endl;
+		return 1;
+	}
 
 	// Handle help, if requested
 	if (helpRequested) {
@@ -56,29 +63,44 @@ int main(int argc, char* argv[])
 
   	// Read in user input from stdin/file
   	// Warn that input file option not yet implemented
-  	if (!inputFile.empty()) {
-    	std::cout << "[warning] input from file ('"
-        	<< inputFile
-            << "') not implemented yet, using stdin\n";
-  	}
-
   	// Loop over each character from user input
   	// (until Return then CTRL-D (EOF) pressed)
-		
-  	while(std::cin >> inputChar){
-		output_str += transformChar(inputChar);
+	if (!inputFile.empty()) {
+    	std::ifstream in_file {inputFile};
+		bool ok_to_read = in_file.good();
+		if (ok_to_read) {
+			while(in_file >> inputChar){
+				output_str += transformChar(inputChar);
+			}
+		}
+		else {
+			std::cout << "Error: Output file is not good to read to" << std::endl;
+			std::cout << "Output text is: " << output_str << std::endl;
+		}
   	}
 	
-
-  	std::cout << output_str << std::endl;
-
+	else {
+  		while(std::cin >> inputChar){
+			output_str += transformChar(inputChar);
+  		}
+	}
   	// Output the transliterated text
   	// Warn that output file option not yet implemented
   	if (!outputFile.empty()) {
-    	std::cout << "[warning] output to file ('"
-            << outputFile
-            << "') not implemented yet, using stdout\n";
+    	std::ofstream out_file {outputFile};
+		bool ok_to_write = out_file.good();
+		if (ok_to_write) {
+			out_file << output_str << std::endl;
+		}
+		else {
+			std::cout << "Error: Output file is not good to write to" << std::endl;
+			std::cout << "Output text is: " << output_str << std::endl;
+		}
   	}
+	else {
+		std::cout << output_str << std::endl;
+		return 0;
+	}
   	// No requirement to return from main, but we do so for clarity
   	// and for consistency with other functions
   	return 0;
