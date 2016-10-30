@@ -3,7 +3,7 @@
 #include "ProcessCommandLine.hpp"
 
 
-bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& helpRequested, bool& versionRequested, std::string& inputFile, std::string& outputFile){
+bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& helpRequested, bool& encrypt, bool& decrypt, bool& caeserCipher, int& key, bool& versionRequested, std::string& inputFile, std::string& outputFile){
 	// Process command line arguments - ignore zeroth element, as we know this to
  	// be the program name and don't need to worry about it
 	
@@ -50,7 +50,45 @@ bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& help
 				++i;
     		}
     	}
-    
+		
+		else if (cmdLineArgs[i] == "-e" || cmdLineArgs[i] == "--encrypt" ) {
+			if (decrypt) {
+				std::cerr << "[error] -e|--encrypt and -d|--decrypt cannot be used together" << std::endl;
+				//exit main with non-zero return to indicate failure
+				return false;
+			}
+			else {
+				encrypt = true;
+			}
+		}
+		
+		else if (cmdLineArgs[i] == "-d" || cmdLineArgs[i] == "--decrypt" ) {
+			if (encrypt) {
+				std::cerr << "[error] -e|--encrypt and -d|--decrypt cannot be used together" << std::endl;
+				//exit main with non-zero return to indicate failure
+				return false;
+			}
+			else {
+				decrypt = true;
+			}
+		}
+			
+		else if (cmdLineArgs[i] == "--caeser") {
+			caeserCipher = true;
+		}
+		
+		else if (cmdLineArgs[i] == "-k" || cmdLineArgs[i] == "--key" ) {
+			if (i == nCmdLineArgs-1) {
+				std::cerr << "[error] -k|--key requies a number argument" << std::endl;
+				//exit main with non-zero return to indicate failure
+				return false;
+			}
+			else {
+				key = std::stoi(cmdLineArgs[i+1]);
+				++i;
+			}
+		}
+			
 		else {
     		// Have an unknown flag to output error message and return non-zero
     		// exit status to indicate failure
