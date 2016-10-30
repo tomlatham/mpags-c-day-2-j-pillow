@@ -43,18 +43,20 @@ int main(int argc, char* argv[])
 			<< "Usage: mpags-cipher [-i <file>] [-o <file>] [--caeser] [-e] [-k <number>]\n\n"
 			<< "Encrypts/Decrypts input alphanumeric text using classical ciphers\n\n"
       		<< "Available options:\n\n"
-      		<< "	-h|--help			Print this help message and exit\n\n"
-      		<< "	--version			Print version information\n\n"
-      		<< "	-i FILE				Read text to be processed from FILE\n"
-      		<< "						Stdin will be used if not supplied\n\n"
-      		<< "	-o FILE				Write processed text to FILE\n"
-      		<< "						Stdout will be used if not supplied\n\n"
-			<< "	--caeser			Use to encrypt/decrypt via caeser cipher\n\n"
-			<< "	-k|--key NUMBER		Specify key=NUMBER for use in cipher\n\n"
-			<< "	-e|--encrypt		Use to encrypt input\n"
-			<< "						Cannot be used with -d|--decrypt\n\n"
-			<< "	-d|decrypt			Use to decrypt input\n"
-			<< "						Cannot be used with -e|--encrypt\n\n";
+      		<< "  -h|--help        Print this help message and exit\n\n"
+      		<< "  --version        Print version information\n\n"
+      		<< "  -i FILE          Read text to be processed from FILE\n"
+      		<< "                   Stdin will be used if not supplied\n\n"
+      		<< "  -o FILE          Write processed text to FILE\n"
+      		<< "                   Stdout will be used if not supplied\n\n"
+			<< "  --caeser         Use to encrypt/decrypt via caeser cipher\n\n"
+			<< "  -k|--key NUMBER  Specify key=NUMBER for use in cipher\n\n"
+			<< "  -e|--encrypt     Use to encrypt input\n"
+			<< "                   Cannot be used with -d|--decrypt\n\n"
+			<< "  -d|decrypt       Use to decrypt input\n"
+			<< "                   When decrypting use same key as used for encrypting\n"
+			<< "                   E.g. if key to encrypt is 5, key to decrypt is 5, not -5\n"
+			<< "                   Cannot be used with -e|--encrypt\n\n";
     		// Help requires no further action, so return from main
     		// with 0 used to indicate success
     	return 0;
