@@ -41,7 +41,7 @@ std::string CaeserCipher( const std::string& inputText, const int key, const boo
 					if (count >= std::abs(shift)) {		// If shift is less than distance to end of alphabet then just shift
 						outputString += alphabet[count+shift];
 					}
-					else {	// If shift is greater than distance to end of alphabet then shift remaining places from end of alphabet
+					else {	// If shift is greater than distance to begining of alphabet then shift remaining places from end of alphabet
 						outputString += alphabet[nAlphabet - (std::abs(shift) - count)];
 					}
 				}
@@ -49,7 +49,7 @@ std::string CaeserCipher( const std::string& inputText, const int key, const boo
 					if ( count < nAlphabet - shift){	// If shift is less than distance to end of alphabet then just shift
 						outputString += alphabet[count+shift];
 					}
-					else {
+					else {	// If shift is greater than distance to end of alphabet then shift remaining places from begining of alphabet
 						outputString += alphabet[(shift - (nAlphabet - 1 - count)) - 1];
 					}
 				}
