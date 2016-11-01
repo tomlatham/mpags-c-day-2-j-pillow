@@ -49,7 +49,8 @@ int main(int argc, char* argv[])
       		<< "  -o FILE          Write processed text to FILE\n"
       		<< "                   Stdout will be used if not supplied\n\n"
 			<< "  --caeser         Use to encrypt/decrypt via caeser cipher\n\n"
-			<< "  -k|--key NUMBER  Specify key=NUMBER for use in cipher\n\n"
+			<< "  -k|--key VALUE   Specify key VALUE for use in cipher\n"
+			<< "                   VALUE can be positive or negative, but must be integer\n\n"
 			<< "  -e|--encrypt     Use to encrypt input\n"
 			<< "                   Cannot be used with -d|--decrypt\n\n"
 			<< "  -d|decrypt       Use to decrypt input\n"
@@ -65,7 +66,7 @@ int main(int argc, char* argv[])
   	// Like help, requires no further action,
   	// so return from main with zero to indicate success
   	if (versionRequested) {
-    	std::cout << "0.1.0" << std::endl;
+    	std::cout << "0.2.0" << std::endl;
     	return 0;
   	}
 
@@ -80,7 +81,7 @@ int main(int argc, char* argv[])
 		
 		if (!inputFile.empty()) {	// Read input from given file
     		bool fileReadGood = processTextFromFile( inputFile, inputString, inputChar ); // Read text from file
-			if (fileReadGood == false) {
+			if (fileReadGood == false) { // If file can't be read give error and return 1
 				std::cerr << "[error] Problem reading from file" << std::endl;
 				return 1;
 			}
@@ -109,7 +110,7 @@ int main(int argc, char* argv[])
 		
 		if (!inputFile.empty()) {	// Read input from given file
     		bool fileReadGood = processTextFromFile( inputFile, inputString, inputChar ); // Read text from file
-			if (fileReadGood == false) {
+			if (fileReadGood == false) { // If file can't be read give error and return 1
 				std::cerr << "[error] Problem reading from file" << std::endl;
 				return 1;
 			}
