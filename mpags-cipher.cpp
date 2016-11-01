@@ -7,11 +7,10 @@
 #include "TransformChar.hpp"
 #include "ProcessCommandLine.hpp"
 #include "CaeserCipher.hpp"
+#include "ProcessTextFromFile.hpp"
 
 // For std::isalpha and std::isupper
 #include <cctype>
-
-//std::string transformChar( const char inputChar );
 
 // Main function of the mpags-cipher program
 int main(int argc, char* argv[])
@@ -72,72 +71,68 @@ int main(int argc, char* argv[])
 
   	// Initialise variables for processing input text
   	char inputChar {'x'};
-  	std::string translitString{""};
-	std::string outputString{""};
+	std::string inputString {""};
+  	std::string translitString {""};
+	std::string outputString {""};
 
 	if (caeserCipher) {
 		std::cout << "You have selected to use the Caeser cipher." << std::endl;
- 	 	// Read in user input from stdin/file
-	  	// Or loop over each character from user input
-		if (!inputFile.empty()) {
-    		std::ifstream in_file {inputFile};
-			bool ok_to_read = in_file.good();
-			if (ok_to_read) {
-				std::cout << "Input has been taken from " << inputFile << std::endl;
-				while(in_file >> inputChar){
-					translitString += transformChar(inputChar);
-				}
-			}
-			else {
-				std::cerr << "[error] Input file is not good to read from" << std::endl;
-				return 1; // Return 1 to to indicate program failed
+		
+		if (!inputFile.empty()) {	// Read input from given file
+    		bool fileReadGood = processTextFromFile( inputFile, inputString, inputChar ); // Read text from file
+			if (fileReadGood == false) {
+				std::cerr << "[error] Problem reading from file" << std::endl;
+				return 1;
 			}
   		}
 	
 		else { // If no input file given then use user input
-			std::cout << "No input file specified, please input desired text into terminal:" << std::endl;
+			std::cout << "Input file not specified. Please input desired text into terminal:" << std::endl;
 	  		while(std::cin >> inputChar){
-				translitString += transformChar(inputChar);
+				inputString += inputChar;
   			}
 		}
 		
-		const bool encryptDecrypt = (encrypt == true) ? true : false; // See if encrypting or decrypting has been selected
+		// Transliterate the input string
+		translitString = transformChar(inputString); 
 		
-		outputString = CaeserCipher(translitString,key,encryptDecrypt);
-		//std::cout << "The output from caeser is: " << outputString << std::endl;		
-	}
+		// See if encrypting or decrypting has been selected
+		const bool encryptDecrypt = (encrypt == true) ? true : false; 
+		
+		//Run Caeser Cipher
+		outputString = CaeserCipher(translitString,key,encryptDecrypt);	
+
+	} // End Caeser implementation
 	
 	else {
 		std::cout << "You have not seleted to use a cipher. Text will only be transliterated." << std::endl;
- 	 	// Read in user input from stdin/file
-	  	// Or loop over each character from user input
-		if (!inputFile.empty()) {
-    		std::ifstream in_file {inputFile};
-			bool ok_to_read = in_file.good();
-			if (ok_to_read) {
-				std::cout << "Input has been taken from " << inputFile << std::endl;
-				while(in_file >> inputChar){
-					translitString += transformChar(inputChar);
-				}
-			}
-			else {
-				std::cerr << "[error] Input file is not good to read from" << std::endl;
-				return 1; // Return 1 to indicate program failed
+		
+		if (!inputFile.empty()) {	// Read input from given file
+    		bool fileReadGood = processTextFromFile( inputFile, inputString, inputChar ); // Read text from file
+			if (fileReadGood == false) {
+				std::cerr << "[error] Problem reading from file" << std::endl;
+				return 1;
 			}
   		}
 	
 		else { // If no input file given then use user input
 			std::cout << "No input file specified, please input desired text into terminal:" << std::endl;
 	  		while(std::cin >> inputChar){
-				translitString += transformChar(inputChar);
+				inputString += inputChar;
   			}
 		}
+		
+		// Transliterate the input string
+		translitString = transformChar(inputString); 
+		
+		// Set outputString. This is done to remain consistent with using the cipher.
 		outputString = translitString;
-	}
+		
+	} // End transliteration only implementation
 	
 	
   	// Output the transliterated/ciphered text
-	if (!outputFile.empty()) {
+	if (!outputFile.empty()) { // If file is given, write to file
  		std::ofstream out_file {outputFile};
 		bool ok_to_write = out_file.good();
 		if (ok_to_write) {
@@ -149,12 +144,15 @@ int main(int argc, char* argv[])
 			std::cout << "Output text is: " << outputString << std::endl;
 		}
 	}
-	else {
-		std::cout << "The output string is: " << outputString << std::endl;
+	else { // If no file is specified output to terminal
+		std::cout 
+			<< "Output file not specified. Printing to terminal:\n"
+			<< "The output string is: " << outputString << std::endl;
 		return 0;
 	}
-  	// No requirement to return from main, but we do so for clarity
-  	// and for consistency with other functions
 	
-  	return 0;
+	
+	// No requirement to return from main, but we do so for clarity
+  	// and for consistency with other functions
+	return 0;
 }

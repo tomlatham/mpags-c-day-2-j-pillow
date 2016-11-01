@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
+#include "CaeserCipher.hpp"
 
 std::string CaeserCipher( const std::string& inputText, const int key, const bool encrypt)
 {
