@@ -1,7 +1,7 @@
 #include <string>
 #include "TransformChar.hpp"
 
-std::string transformChar( const std::string inputString ){	
+std::string transformChar( const std::string& inputString ){	
 	/* Transliterates string input
 		- Will make characters upper case
 		- Change digits to words

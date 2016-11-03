@@ -3,7 +3,7 @@
 #include <fstream>
 #include "ProcessTextFromFile.hpp"
 
-bool processTextFromFile( const std::string& inputFile, std::string& inputString, char& inputChar )
+bool processTextFromFile( const std::string& inputFile, std::string& inputString )
 {
 	/* Function to read text from a file
 		returns a bool of whether read was successful or not*/
@@ -12,6 +12,7 @@ bool processTextFromFile( const std::string& inputFile, std::string& inputString
 	bool ok_to_read = in_file.good(); 
 	if (ok_to_read) {	// If file can be read, assign characters to input string
 		std::cout << "Input has been taken from " << inputFile << std::endl;
+		char inputChar {'x'};
 		while(in_file >> inputChar){
 			inputString += inputChar;
 		}

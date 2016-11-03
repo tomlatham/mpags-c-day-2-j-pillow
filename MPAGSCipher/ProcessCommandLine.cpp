@@ -3,14 +3,18 @@
 #include "ProcessCommandLine.hpp"
 
 
-bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& helpRequested, bool& encrypt, bool& decrypt, bool& caeserCipher, int& key, bool& versionRequested, std::string& inputFile, std::string& outputFile){
+bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& helpRequested, bool& encrypt, bool& caeserCipher, size_t& key, bool& versionRequested, std::string& inputFile, std::string& outputFile){
 	// Process command line arguments - ignore zeroth element, as we know this to
  	// be the program name and don't need to worry about it
 	
 	// Add a typedef that assigns another name for the given type for clarity
 	typedef std::vector<std::string>::size_type size_type;
 	const size_type nCmdLineArgs {cmdLineArgs.size()};
-	
+
+	// Local booleans to allow check that the -e and -d flags have not both been used
+	bool encryptFlagSet {false};
+	bool decryptFlagSet {false};
+
 	for (size_type i {1}; i < nCmdLineArgs; ++i) {
 
 		if (cmdLineArgs[i] == "-h" || cmdLineArgs[i] == "--help") {
@@ -18,7 +22,7 @@ bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& help
 		}
     
 		else if (cmdLineArgs[i] == "--version") {
-    		versionRequested = true;
+			versionRequested = true;
    		}
     
 		else if (cmdLineArgs[i] == "-i") {
@@ -52,24 +56,26 @@ bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& help
     	}
 		
 		else if (cmdLineArgs[i] == "-e" || cmdLineArgs[i] == "--encrypt" ) {
-			if (decrypt) {
+			if (decryptFlagSet) {
 				std::cerr << "[error] -e|--encrypt and -d|--decrypt cannot be used together" << std::endl;
 				//exit main with non-zero return to indicate failure
 				return false;
 			}
 			else {
+				encryptFlagSet = true;
 				encrypt = true;
 			}
 		}
 		
 		else if (cmdLineArgs[i] == "-d" || cmdLineArgs[i] == "--decrypt" ) {
-			if (encrypt) {
+			if (encryptFlagSet) {
 				std::cerr << "[error] -e|--encrypt and -d|--decrypt cannot be used together" << std::endl;
 				//exit main with non-zero return to indicate failure
 				return false;
 			}
 			else {
-				decrypt = true;
+				decryptFlagSet = true;
+				encrypt = false;
 			}
 		}
 			
@@ -84,7 +90,7 @@ bool processCommandLine( const std::vector<std::string>& cmdLineArgs, bool& help
 				return false;
 			}
 			else {
-				key = std::stoi(cmdLineArgs[i+1]);
+				key = std::stoul(cmdLineArgs[i+1]);
 				++i;
 			}
 		}
